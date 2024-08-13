@@ -1,0 +1,70 @@
+en
+conf t
+hostname Access-SW1
+line con 0
+logging sync
+hist size 256			  
+exit
+no ip domain-lookup 
+line vty 0 15
+transport in none
+transport in ssh
+exit
+spanning-tree mode rapid-pvst
+ip dhcp snooping
+ip arp inspection validate src-mac
+exit
+wr
+
+en
+conf t 
+int vlan1
+shutdown
+int vlan 10
+ip add 10.0.11.6 255.255.255.0
+no shutdown
+int vlan 20
+ip add 10.0.12.6 255.255.255.0
+no shutdown
+int vlan 30
+ip add 10.0.13.6 255.255.255.0
+no shutdown
+int vlan 85
+ip add 10.0.18.6 255.255.255.0
+no shutdown
+int vlan 94
+ip add 10.0.19.6 255.255.255.0
+no shutdown
+exit
+
+int g0/1
+switchport
+switchport mode trunk 
+switchport trunk native vlan 94
+int g0/2
+switchport
+switchport mode trunk 
+switchport trunk native vlan 94
+exit
+
+int range fa0/1-2
+switchport mode access
+switchport access vlan 10
+spanning-tree portfast
+spanning-tree bpduguard enable
+spanning-tree guard root 
+no shutdown
+exit
+
+int range fa0/3-24
+switchport mode access
+switchport access vlan 94
+spanning-tree portfast
+spanning-tree bpduguard enable
+spanning-tree guard root 
+shutdown
+exit
+
+exit
+wr
+

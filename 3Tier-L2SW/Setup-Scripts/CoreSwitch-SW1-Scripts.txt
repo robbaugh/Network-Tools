@@ -1,0 +1,98 @@
+en
+conf t
+hostname Core-SW1
+line con 0
+logging sync
+hist size 256
+exit
+no ip domain-lookup 
+line vty 0 15
+transport in none
+transport in ssh
+exit
+spanning-tree mode rapid-pvst
+ip routing
+ip cef distributed
+ip dhcp snooping
+ip arp inspection validate src-mac
+exit
+wr
+
+en
+conf t
+int g1/1/1
+no switchport
+ip add 10.0.10.17 255.255.255.252
+no shutdown
+int g1/1/3
+no switchport
+ip add 10.0.10.21 255.255.255.252
+no shutdown
+
+int g1/0/1
+no switchport
+ip add 10.0.10.2 255.255.255.252
+no shutdown
+int g1/0/2
+no switchport
+ip add 10.0.10.10 255.255.255.252
+no shutdown
+
+int g1/1/2
+switchport
+switchport mode access
+switchport access vlan 94
+spanning-tree portfast
+spanning-tree bpduguard enable
+spanning-tree guard root 
+shutdown
+exit
+
+int g1/1/4
+switchport
+switchport mode access
+switchport access vlan 94
+spanning-tree portfast
+spanning-tree bpduguard enable
+spanning-tree guard root 
+shutdown
+exit
+
+int range g1/0/3 - g1/0/24
+switchport
+switchport mode access
+switchport access vlan 94
+spanning-tree portfast
+spanning-tree bpduguard enable
+spanning-tree guard root 
+shutdown
+exit
+
+router eigrp 100
+network 0.0.0.0
+no auto-summary
+exit
+
+router ospf 1
+network 10.0.0.0 0.0.255.255 area 0
+exit
+no router rip
+
+
+int vlan1
+shutdown
+int vlan10
+no shutdown
+int vlan 20
+no shutdown
+int vlan 30
+no shutdown
+int vlan 85
+no shutdown
+int vlan 94
+no shutdown
+exit
+exit
+wr
+
+

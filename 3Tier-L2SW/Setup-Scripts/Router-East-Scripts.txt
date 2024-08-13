@@ -1,0 +1,43 @@
+en
+conf t
+hostname Router-East
+line con 0
+logging sync
+exit
+line vty 0 15
+transport in none
+transport in ssh
+exit
+no ip domain-lookup 
+ip route 0.0.0.0 0.0.0.0 10.2.10.2
+int s0/0 
+ip address 10.2.10.1 255.255.255.252
+no shutdown
+
+int g1/0
+ip add 10.0.10.9 255.255.255.252
+no shutdown
+exit
+
+int g2/0
+ip add 10.0.10.13 255.255.255.252
+no shutdown
+exit
+
+int range g3/0-g9/0
+shutdown
+exit
+
+ip cef
+router eigrp 100
+network 0.0.0.0
+no auto-summary
+exit
+router ospf 1
+network 10.0.0.0 0.0.255.255 area 0
+exit
+no router rip
+exit
+wr
+
+
